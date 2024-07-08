@@ -4,14 +4,16 @@ General settings. Mainly paths to data.
 import os
 
 # data root (mainly for CIFAR10)
-DATA_ROOT = os.getenv("DATA_ROOT")
+#DATA_ROOT = os.getenv("DATA_ROOT")
+DATA_ROOT = "C:\\Users\\ilyas\\Downloads\\CIFAR10"
+
 
 # ImageNet path
 IMAGENET_PATH = os.getenv("IMAGENET_PATH")
 
 # ---------------------------------------------
 # Following are only needed for caching!!!
-# ---------------------------------------------
+# --------------------------------------------- 
 SHMTMPDIR = "/dev/shm"
 
 # ImageNet train data tar files

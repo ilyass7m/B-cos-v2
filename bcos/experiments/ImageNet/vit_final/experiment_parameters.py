@@ -194,3 +194,4 @@ CONFIGS.update(bcos)
 
 if __name__ == "__main__":
     configs_cli(CONFIGS)
+    print(CONFIGS.keys())

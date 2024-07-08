@@ -42,8 +42,8 @@ def get_model(model_config):
     # create model
     model = get_arch_builder(arch_name)(**args)
 
-    if is_bcos:
-        logit_bias = model_config["logit_bias"]
-        model = BcosSequential(model, LogitLayer(logit_bias=logit_bias))
+   # if is_bcos:
+   #     logit_bias = model_config["logit_bias"]
+    #    model = BcosSequential(model, LogitLayer(logit_bias=logit_bias))
 
     return model

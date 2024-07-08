@@ -117,6 +117,7 @@ class Experiment:
         registry = ClassificationDataModule.registry()
         if self.dataset in registry:
             datamodule = registry[self.dataset](data_config)
+            print(datamodule)
         else:
             available = list(registry.keys())
             _line_break = "\n" + " " * len("ValueError: ")
@@ -159,6 +160,7 @@ class Experiment:
             The model.
         """
         model_config = self.config["model"]
+        print(model_config)
         model_config = update_config(model_config, kwargs)
         return self._get_model(model_config)
 

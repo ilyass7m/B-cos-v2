@@ -182,6 +182,7 @@ class ImageNetDataModule(ClassificationDataModule):
     def __init__(self, config):
         super().__init__(config)
         self.prepare_data_per_node = self.config.get("cache_dataset", None) == "shm"
+        print(config)
 
     def prepare_data(self) -> None:
         cache_dataset = self.config.get("cache_dataset", None)
@@ -245,6 +246,7 @@ class CIFAR10DataModule(ClassificationDataModule):
     def setup(self, stage: str) -> None:
         DATA_ROOT = settings.DATA_ROOT
         if stage == "fit":
+            print(self.config)
             self.train_dataset = CIFAR10(
                 root=DATA_ROOT,
                 train=True,
@@ -260,3 +262,71 @@ class CIFAR10DataModule(ClassificationDataModule):
             download=True,
         )
         assert len(self.eval_dataset) == self.NUM_EVAL_EXAMPLES
+
+
+# bcos/data/datamodules.py
+
+from torchvision import transforms
+from torchvision.datasets import ImageFolder
+from torch.utils.data import DataLoader
+import pytorch_lightning as pl
+from bcos.data.presets import RailwayClassificationPresetTrain, RailwayClassificationPresetTest
+
+class RailwayDataModule(ClassificationDataModule):
+    NUM_CLASSES = 2  # Assuming two classes: defective and non-defective
+    NUM_TRAIN_EXAMPLES: int = 300
+    NUM_EVAL_EXAMPLES: int = 10_000
+
+    
+        
+        
+
+    def setup(self, stage=None):
+        # Initialisation des datasets pour chaque étape
+        if stage == 'fit' or stage is None:
+            self.train_dataset = ImageFolder(
+                root="C:\\Users\\ilyas\\Downloads\\railway\\Railway Track fault Detection Updated\\Train",
+                #transform=RailwayClassificationPresetTrain,
+                transform = self.config["train_transform"],
+            )
+            assert len(self.train_dataset) == self.NUM_TRAIN_EXAMPLES 
+        self.eval_dataset = ImageFolder(
+            root="C:\\Users\\ilyas\\Downloads\\railway\\Railway Track fault Detection Updated\\Validation",
+            #transform=RailwayClassificationPresetTest,
+            transform = self.config["test_transform"],
+        )
+
+
+    def train_dataloader(self):
+        assert self.train_dataset is not None, "Train dataset is None"
+        return DataLoader(
+            self.train_dataset,
+            batch_size=self.batch_size,
+            shuffle=True,
+            num_workers=self.num_workers,
+            pin_memory=True,
+        )
+
+    def val_dataloader(self):
+        assert self.eval_dataset is not None, "Validation dataset is None"
+        return DataLoader(
+            self.eval_dataset,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
+            pin_memory=True,
+        )
+
+    def test_dataloader(self):
+        assert self.test_dataset is not None, "Test dataset is None"
+        return DataLoader(
+            self.test_dataset,
+            batch_size=self.batch_size,
+            shuffle=False,
+            num_workers=self.num_workers,
+            pin_memory=True,
+        )
+
+
+
+

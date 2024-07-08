@@ -30,10 +30,11 @@ Feel free to open up an issue at https://github.com/B-cos/B-cos-v2 if you have a
 from collections import OrderedDict
 from typing import Any, Callable, List, Tuple, Union
 
-import torch
+import torch  
 from einops import rearrange
 from einops.layers.torch import Rearrange
 from torch import Tensor, nn
+from bcos.common import BcosUtilMixin
 
 from bcos.modules.common import DetachableModule
 
@@ -227,7 +228,7 @@ class Transformer(nn.Sequential):
         super().__init__(layers_odict)
 
 
-class SimpleViT(nn.Module):
+class SimpleViT(BcosUtilMixin,nn.Module):
     def __init__(
         self,
         *,
@@ -482,3 +483,21 @@ def _warn_if_not_called_from_bcos_models_pretrained_or_torch_hub():
             "Prefer to use the entrypoints from `bcos.models.pretrained` or `torch.hub`.\n"
             f"See lines 17-29 of this file ({__file__}) for why."
         )
+
+
+# bcos/models/vit.py
+
+import torch.nn as nn
+from transformers import ViTModel
+
+class RailwayViT(nn.Module):
+    def __init__(self, num_classes=2, **kwargs):
+        super(RailwayViT, self).__init__()
+        self.vit = ViTModel.from_pretrained('google/vit-base-patch16-224-in21k')
+        self.classifier = nn.Linear(self.vit.config.hidden_size, num_classes)
+    
+    def forward(self, x):
+        outputs = self.vit(x)
+        logits = self.classifier(outputs.pooler_output)
+        return logits
+

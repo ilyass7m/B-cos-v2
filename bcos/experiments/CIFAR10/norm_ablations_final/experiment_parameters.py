@@ -142,3 +142,4 @@ CONFIGS.update(create_configs_with_different_seeds(CONFIGS, seeds=[420, 1337]))
 
 if __name__ == "__main__":
     configs_cli(CONFIGS)
+    print(CONFIGS.keys())

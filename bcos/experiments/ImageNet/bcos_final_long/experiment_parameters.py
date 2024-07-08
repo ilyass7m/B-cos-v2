@@ -169,3 +169,4 @@ change_configs_reduce_batch_size(
 
 if __name__ == "__main__":
     configs_cli(CONFIGS)
+    print(CONFIGS.keys())

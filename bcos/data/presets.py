@@ -216,6 +216,56 @@ class CIFAR10ClassificationPresetTest:
 
     def __rich_repr__(self):
         yield "transforms", self.transforms.transforms
+        
+
+
+
+class RailwayClassificationPresetTrain:
+    def __init__(self, is_bcos=False):
+        self.is_bcos = is_bcos
+        
+        if self.is_bcos:
+            self.transforms = transforms.Compose([
+                transforms.RandomResizedCrop(224),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+                custom_transforms.AddInverse()  # Assuming custom_transforms is imported
+            ])
+        else:
+            self.transforms = transforms.Compose([
+                transforms.RandomResizedCrop(224),
+                transforms.RandomHorizontalFlip(),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+            ])
+
+    def __call__(self, img):
+        return self.transforms(img)
+
+
+class RailwayClassificationPresetTest:
+    def __init__(self, is_bcos=False):
+        self.is_bcos = is_bcos
+        
+        if self.is_bcos:
+            self.transforms = transforms.Compose([
+                transforms.Resize(256),
+                transforms.CenterCrop(224),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+                custom_transforms.AddInverse()  # Assuming custom_transforms is imported
+            ])
+        else:
+            self.transforms = transforms.Compose([
+                transforms.Resize(256),
+                transforms.CenterCrop(224),
+                transforms.ToTensor(),
+                transforms.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225)),
+            ])
+
+    def __call__(self, img):
+        return self.transforms(img)
 
 
 def get_args_dict(ignore: "tuple | list" = tuple()):
@@ -226,3 +276,7 @@ def get_args_dict(ignore: "tuple | list" = tuple()):
     av = inspect.getargvalues(frame)
     ignore = tuple(ignore) + ("self", "cls")
     return {arg: av.locals[arg] for arg in av.args if arg not in ignore}
+
+
+
+
